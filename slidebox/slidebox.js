@@ -37,74 +37,72 @@
 			}
 		};
 
-		function touchStart(event) {
-			startX = event.targetTouches[0].pageX;
-			startY = event.targetTouches[0].pageY;
-
-			// find parent with x-slidebox tag, get orientation attribute
-			// in case someone has a slidebox with lots of elements inside
-			// or multiple slideboxes on a page
-
-			parentNodeElement = event.targetTouches[0].target.parentNode;
-			var parentNodeName = event.targetTouches[0].target.parentNode.tagName;
-
-			while(parentNodeName != 'x-slidebox') {
-				parentNodeElement = parentNodeElement.parentNode;
-				parentNodeName = parentNodeElement.tagName.toLowerCase();
-			}
-
-			orient = parentNodeElement.getAttribute('data-orientation');
-
-		}
-
-		function touchMove(event) {
-			// prevent scrolling of page
-			event.preventDefault();
-			var moveX = event.targetTouches[0].pageX - startX;
-			var moveY = event.targetTouches[0].pageY - startY;
-			dirX = Math.abs(moveX)/moveX; // 1 for left to right swipe, -1 for right to left swipe
-			dirY = Math.abs(moveY)/moveY;
-		}
-
-		function touchEnd() {
-			switchMove();
-		}
-
-		function switchMove() {
-			switch(orient) {
-				case 'x':
-					if(dirX > 0) {
-						parentNodeElement.xtag.slidePrevious();
-					}
-					else if (dirX < 0) {
-						parentNodeElement.xtag.slideNext();
-					}
-					else {}
-					break;
-				case 'y':
-					if(dirY > 0) {
-						parentNodeElement.xtag.slidePrevious();
-					}
-					else if (dirY < 0) {
-						parentNodeElement.xtag.slideNext();
-					}
-					else {}
-					break;
-				default:
-					break;
-				}
-		}
-
 	xtag.register('x-slidebox', {
 		onInsert: init,
-		onCreate:function() {
-			this.addEventListener("touchstart", touchStart, false);
-			this.addEventListener("touchmove", touchMove, false);
-			this.addEventListener("touchend", touchEnd, false);
-		},
 		events:{
 			'transitionend': function(e){
 				if (e.target == this) xtag.fireEvent(this, 'slideend');
+			},
+			'touchstart': function(e){
+				startX = e.targetTouches[0].pageX;
+				startY = e.targetTouches[0].pageY;
+
+				// find parent with x-slidebox tag, get orientation attribute
+				// in case someone has a slidebox with lots of elements inside
+				// or multiple slideboxes on a page
+
+				parentNodeElement = e.targetTouches[0].target.parentNode;
+				var parentNodeName = e.targetTouches[0].target.parentNode.tagName;
+
+				while(parentNodeName != 'x-slidebox') {
+					parentNodeElement = parentNodeElement.parentNode;
+					parentNodeName = parentNodeElement.tagName.toLowerCase();
+				}
+
+				orient = parentNodeElement.getAttribute('data-orientation');
+
+			},
+			'touchmove': function(e){
+
+				// prevent scrolling of page in most browsers
+				e.preventDefault();
+
+				var moveX = e.targetTouches[0].pageX - startX;
+				var moveY = e.targetTouches[0].pageY - startY;
+				dirX = Math.abs(moveX)/moveX; // 1 for left to right swipe, -1 for right to left swipe
+				dirY = Math.abs(moveY)/moveY;
+
+			},
+			'touchend': function(){
+				switch(orient) {
+					case 'x':
+						if(dirX > 0) {
+							parentNodeElement.xtag.slidePrevious();
+						}
+						else if (dirX < 0) {
+							parentNodeElement.xtag.slideNext();
+						}
+						else {}
+						break;
+					case 'y':
+						if(dirY > 0) {
+							parentNodeElement.xtag.slidePrevious();
+						}
+						else if (dirY < 0) {
+							parentNodeElement.xtag.slideNext();
+						}
+						else {}
+						break;
+					default:
+						if(dirX > 0) {
+							parentNodeElement.xtag.slidePrevious();
+						}
+						else if (dirX < 0) {
+							parentNodeElement.xtag.slideNext();
+						}
+						else {}
+						break;
+					}
 			}
 		},
 		setters: {
