@@ -76,35 +76,15 @@
 			'touchend': function(){
 				switch(orient) {
 					case 'x':
-						if(dirX > 0) {
-							parentNodeElement.xtag.slidePrevious();
-						}
-						else if (dirX < 0) {
-							parentNodeElement.xtag.slideNext();
-						}
-						else {}
+						parentNodeElement.xtag[ !(dirX - 1) ? 'slidePrevious' : 'slideNext' ]();
 						break;
 					case 'y':
-						if(dirY > 0) {
-							parentNodeElement.xtag.slidePrevious();
-						}
-						else if (dirY < 0) {
-							parentNodeElement.xtag.slideNext();
-						}
-						else {}
+						parentNodeElement.xtag[ !(dirX - 1) ? 'slidePrevious' : 'slideNext' ]();
 						break;
 					default:
-						if(dirX > 0) {
-							parentNodeElement.xtag.slidePrevious();
-						}
-						else if (dirX < 0) {
-							parentNodeElement.xtag.slideNext();
-						}
-						else {}
 						break;
-					}
-			}
-		},
+				}
+			},
 		setters: {
 			'data-orientation': function(value){
 				this.setAttribute('data-orientation', value.toLowerCase());
